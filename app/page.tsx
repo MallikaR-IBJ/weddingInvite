@@ -4,9 +4,9 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const slides = [
-  ["/img/hero-bg.jpg", "Ishanthika and Nirmal walking on the beach"],
-  ["/img/hero-2.jpg", "Ishanthika and Nirmal beneath glowing lanterns"],
-  ["/img/hero-3.jpg", "Ishanthika and Nirmal by the railway at sunset"],
+  ["/img/hero-bg.jpg", "Hiruni and Ravindu walking on the beach"],
+  ["/img/hero-2.jpg", "Hiruni and Ravindu beneath glowing lanterns"],
+  ["/img/hero-3.jpg", "Hiruni and Ravindu by the railway at sunset"],
 ] as const;
 
 const timeline = [
@@ -20,8 +20,9 @@ const timeline = [
   ["03:47 PM", "⌁", "We Say Goodbye", "A beautiful send-off"],
 ] as const;
 
-const mapSrc = "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1980.3738562409967!2d80.22259816266886!3d6.920734294939696!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae3a9427f1a7ce3%3A0xa5e6a5944d8182de!2sHotel%20Kashyapa!5e0!3m2!1sen!2slk!4v1775645627513!5m2!1sen!2slk";
-const calendarUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Ishanthika+%26+Nirmal+Wedding&details=Poruwa+Ceremony+at+9.45+AM&dates=20260803T030000Z/20260803T103000Z&location=Hotel+Kashyapa+Banquet+hall";
+const mapSrc = "https://www.google.com/maps?q=7.3027672,80.6367887&output=embed";
+const mapUrl = "https://maps.app.goo.gl/ZJ6S4TzJ5DrnDfjH8";
+const calendarUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Hiruni+%26+Ravindu+Wedding&details=Poruwa+Ceremony+at+9.45+AM&dates=20260803T030000Z/20260803T103000Z&location=Hotel+Kashyapa+Banquet+hall";
 
 export default function Home() {
   const [opening, setOpening] = useState(false);
@@ -33,8 +34,8 @@ export default function Home() {
   const backgroundMusic = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     document.body.style.overflow = opened ? "" : "hidden";
+    window.scrollTo(0, 0);
     return () => { document.body.style.overflow = ""; };
   }, [opened]);
 
@@ -91,12 +92,12 @@ export default function Home() {
       {!opened && (
         <div className="opening-gate">
           <video ref={openingVideo} className="opening-video" muted playsInline preload="auto" onEnded={finishOpening}>
-            <source media="(max-width: 767px)" src="/img/portrait.mp4" type="video/mp4" />
-            <source src="/img/landscape.mp4" type="video/mp4" />
+            <source media="(max-width: 767px)" src="/img/portrait-champagne.mp4" type="video/mp4" />
+            <source src="/img/landscape-champagne.mp4" type="video/mp4" />
           </video>
           {!opening ? (
             <button className="opening-trigger" type="button" onClick={beginOpening}>
-              <span>Ishanthika & Nirmal</span><small>Tap to open</small>
+              <span>Hiruni & Ravindu</span><small>Tap to open</small>
             </button>
           ) : (
             <button className="opening-skip" type="button" onClick={finishOpening}>Skip</button>
@@ -120,7 +121,7 @@ export default function Home() {
                 alt={alt}
                 width={1920}
                 height={1080}
-                priority={index === 0}
+                loading="eager"
                 sizes="100vw"
                 style={{ animation: activeSlide === index ? "hero-zoom 4s ease-out forwards" : "none", transform: activeSlide === index ? undefined : "scale(1)" }}
               />
@@ -130,8 +131,8 @@ export default function Home() {
         <div className="hero-shade" />
         <div className="hero-copy">
           <p className="section-label on-dark">Save the date</p>
-          <h1>Ishanthika &<br />Nirmal</h1>
-          <div className="hero-date"><span>August</span><strong>03</strong><span>2026</span></div>
+          <h1>Hiruni &<br />Ravindu</h1>
+          <div className="hero-date"><span>December</span><strong>14</strong><span>2026</span></div>
           <a className="scroll-cue" href="#couple"><span>Scroll Down</span><i>⌄</i></a>
         </div>
         <div className="slider-dots" aria-label="Wedding photos">
@@ -144,14 +145,14 @@ export default function Home() {
       <section className="couple-section page-section" id="couple">
         <div className="couple-grid">
           <article className="person-card">
-            <Image src="/img/bride.jpg" alt="Ishanthika — the bride" fill sizes="(max-width: 700px) 288px, 288px" />
+            <Image src="/img/bride.jpg" alt="Hiruni — the bride" fill sizes="(max-width: 700px) 288px, 288px" />
             <div className="person-shade" />
-            <div className="person-copy"><h2>Ishanthika</h2><span>The Bride</span><p>With a heart full of love and gratitude, I can&apos;t wait to begin this beautiful journey with the one who makes every moment brighter.</p></div>
+            <div className="person-copy"><h2>Hiruni</h2><span>The Bride</span><p>With a heart full of love and gratitude, I can&apos;t wait to begin this beautiful journey with the one who makes every moment brighter.</p></div>
           </article>
           <article className="person-card">
-            <Image src="/img/groom.jpg" alt="Nirmal — the groom" fill sizes="(max-width: 700px) 288px, 288px" />
+            <Image src="/img/groom.jpg" alt="Ravindu — the groom" fill sizes="(max-width: 700px) 288px, 288px" />
             <div className="person-shade" />
-            <div className="person-copy"><h2>Nirmal</h2><span>The Groom</span><p>Every love story is special, but ours is my favorite. I&apos;m blessed to share this journey with the most amazing person.</p></div>
+            <div className="person-copy"><h2>Ravindu</h2><span>The Groom</span><p>Every love story is special, but ours is my favorite. I&apos;m blessed to share this journey with the most amazing person.</p></div>
           </article>
         </div>
         <div className="marriage-note">
@@ -159,7 +160,7 @@ export default function Home() {
           <p className="section-label">We are</p>
           <h2 className="section-title">Getting Married</h2>
           <p>From the moment our paths crossed, we knew that our love story was just beginning. Every day since has been a chapter filled with laughter, growth, and unforgettable memories. As we take the next step in our journey together, we invite you to share in the joy of this new chapter.</p>
-          <em>— Nirmal & Ishanthika —</em>
+          <em>— Ravindu & Hiruni —</em>
         </div>
       </section>
 
@@ -172,7 +173,7 @@ export default function Home() {
           <span className="time-chip">▣ &nbsp; 08:30 AM to 4:00 PM</span>
           <div className="map-frame"><iframe src={mapSrc} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Wedding venue location" /></div>
           <div className="location-actions">
-            <a className="primary-button" href="https://maps.app.goo.gl/2jDzBzuunLuxypg89" target="_blank" rel="noreferrer">⌖ &nbsp; Open in maps ↗</a>
+            <a className="primary-button" href={mapUrl} target="_blank" rel="noreferrer">⌖ &nbsp; Open in maps ↗</a>
             <a className="secondary-button" href={calendarUrl} target="_blank" rel="noreferrer">▣ &nbsp; Add to calendar ↓</a>
           </div>
           <a className="calendar-link" href={calendarUrl} target="_blank" rel="noreferrer">Or add to Google Calendar</a>
@@ -206,7 +207,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer><h3>Ishanthika & Nirmal</h3><p>August 03 2026</p><p>Ishanthika: 0762735453 &nbsp;|&nbsp; Nirmal: 0766186327</p><small>© 2026 SicatDigital | All rights reserved</small></footer>
+      <footer><h3>Hiruni & Ravindu</h3><p>December 14 2026</p><p>Hiruni: 0762735453 &nbsp;|&nbsp; Ravindu: 0766186327</p><small>© 2026 SicatDigital | All rights reserved</small></footer>
     </main>
   );
 }
