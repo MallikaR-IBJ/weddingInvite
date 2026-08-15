@@ -10,14 +10,13 @@ const slides = [
 ] as const;
 
 const timeline = [
-  ["9:45 AM", "⌖", "We Welcome You", "Welcome & seating"],
-  ["10:04 AM", "♡", "We Marry", "Sacred vows on Poruwa"],
-  ["10:40 AM", "♔", "We Cut the Cake", "Sweet celebration moment"],
-  ["11:30 AM", "♢", "We Raise a Toast", "Drinks & celebrations begin"],
-  ["12:30 PM", "♨", "We Dine", "Delightful wedding feast"],
-  ["01:45 PM", "♫", "We Dance", "Celebrate with music & joy"],
-  ["03:15 PM", "✦", "We Celebrate", "The ceremonial gathering"],
-  ["03:47 PM", "⌁", "We Say Goodbye", "A beautiful send-off"],
+  ["9:30 AM", "⌖", "We Welcome You", "Welcome & seating"],
+  ["9:50 AM", "♡", "We Marry", "Sacred vows on Poruwa"],
+  ["10:25 AM", "♢", "We Raise a Toast", "Drinks & celebrations begin"],
+  ["11:30 PM", "♨", "We Dine", "Delightful wedding feast"],
+  ["12:30 PM", "♫", "We Dance", "Celebrate with music & joy"],
+  ["01:15 PM", "✦", "We Celebrate", "The ceremonial gathering"],
+  ["03:20 PM", "⌁", "We Say Goodbye", "A beautiful send-off"],
 ] as const;
 
 const mapSrc = "https://www.google.com/maps?q=7.3027672,80.6367887&output=embed";
@@ -168,9 +167,9 @@ export default function Home() {
         <div className="section-heading"><p className="section-label">Join us at</p><h2 className="section-title">Location</h2></div>
         <div className="location-card">
           <div className="location-pin" aria-hidden="true">⌖</div>
-          <h3>Hotel Kashyapa Banquet hall</h3>
-          <p>Awissawella</p>
-          <span className="time-chip">▣ &nbsp; 08:30 AM to 4:00 PM</span>
+          <h3>The Grand Kandyan Hotel</h3>
+          <p>Kandy</p>
+          <span className="time-chip">▣ &nbsp; 09:30 AM to 3:30 PM</span>
           <div className="map-frame"><iframe src={mapSrc} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Wedding venue location" /></div>
           <div className="location-actions">
             <a className="primary-button" href={mapUrl} target="_blank" rel="noreferrer">⌖ &nbsp; Open in maps ↗</a>
@@ -195,7 +194,7 @@ export default function Home() {
         <div className="rsvp-wrap">
           <p className="section-label">Be Our Guest</p>
           <h2 className="section-title">RSVP</h2>
-          <p className="rsvp-deadline">Kindly respond by July 03, 2026</p>
+          <p className="rsvp-deadline">Kindly respond by October 20, 2026</p>
           <form aria-label="RSVP placeholder">
             <span className="form-note">RSVP form placeholder</span>
             <label>Full Name *<input type="text" placeholder="Your full name" disabled /></label>
