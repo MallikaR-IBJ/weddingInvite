@@ -206,7 +206,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer><h3>Hiruni & Ravindu</h3><p>December 14 2026</p><p>Hiruni: 0762735453 &nbsp;|&nbsp; Ravindu: 0766186327</p><small>© 2026 SicatDigital | All rights reserved</small></footer>
+      <footer><h3>Hiruni & Ravindu</h3><p>December 14 2026</p><p>Hiruni: 0715129071 &nbsp;|&nbsp; Ravindu: 0715328308</p><small>© 2026 ravinduranathilaka | All rights reserved</small></footer>
     </main>
   );
 }
