@@ -1,69 +1,212 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+
+const slides = [
+  ["/img/hero-bg.jpg", "Ishanthika and Nirmal walking on the beach"],
+  ["/img/hero-2.jpg", "Ishanthika and Nirmal beneath glowing lanterns"],
+  ["/img/hero-3.jpg", "Ishanthika and Nirmal by the railway at sunset"],
+] as const;
+
+const timeline = [
+  ["9:45 AM", "⌖", "We Welcome You", "Welcome & seating"],
+  ["10:04 AM", "♡", "We Marry", "Sacred vows on Poruwa"],
+  ["10:40 AM", "♔", "We Cut the Cake", "Sweet celebration moment"],
+  ["11:30 AM", "♢", "We Raise a Toast", "Drinks & celebrations begin"],
+  ["12:30 PM", "♨", "We Dine", "Delightful wedding feast"],
+  ["01:45 PM", "♫", "We Dance", "Celebrate with music & joy"],
+  ["03:15 PM", "✦", "We Celebrate", "The ceremonial gathering"],
+  ["03:47 PM", "⌁", "We Say Goodbye", "A beautiful send-off"],
+] as const;
+
+const mapSrc = "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1980.3738562409967!2d80.22259816266886!3d6.920734294939696!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae3a9427f1a7ce3%3A0xa5e6a5944d8182de!2sHotel%20Kashyapa!5e0!3m2!1sen!2slk!4v1775645627513!5m2!1sen!2slk";
+const calendarUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Ishanthika+%26+Nirmal+Wedding&details=Poruwa+Ceremony+at+9.45+AM&dates=20260803T030000Z/20260803T103000Z&location=Hotel+Kashyapa+Banquet+hall";
 
 export default function Home() {
+  const [opening, setOpening] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [musicPlaying, setMusicPlaying] = useState(false);
+  const openingVideo = useRef<HTMLVideoElement>(null);
+  const envelopeSound = useRef<HTMLAudioElement>(null);
+  const backgroundMusic = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.body.style.overflow = opened ? "" : "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, [opened]);
+
+  useEffect(() => {
+    if (!opened) return;
+    const timer = window.setInterval(
+      () => setActiveSlide((slide) => (slide + 1) % slides.length),
+      4000,
+    );
+    return () => window.clearInterval(timer);
+  }, [opened]);
+
+  const beginOpening = () => {
+    setOpening(true);
+    envelopeSound.current?.play().catch(() => undefined);
+    const music = backgroundMusic.current;
+    if (music) {
+      music.volume = 0;
+      music.play().catch(() => undefined);
+    }
+    openingVideo.current?.play().catch(finishOpening);
+  };
+
+  const finishOpening = () => {
+    openingVideo.current?.pause();
+    if (envelopeSound.current) {
+      envelopeSound.current.pause();
+      envelopeSound.current.currentTime = 0;
+    }
+    const music = backgroundMusic.current;
+    if (music) {
+      music.currentTime = 0;
+      music.volume = 0.3;
+      music.play().then(() => setMusicPlaying(true)).catch(() => setMusicPlaying(false));
+    }
+    setOpened(true);
+  };
+
+  const toggleMusic = () => {
+    const music = backgroundMusic.current;
+    if (!music) return;
+    if (music.paused) music.play().then(() => setMusicPlaying(true)).catch(() => undefined);
+    else {
+      music.pause();
+      setMusicPlaying(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main>
+      <audio ref={envelopeSound} src="/img/envelope.mp3" preload="auto" />
+      <audio ref={backgroundMusic} src="/img/background.mp3" preload="auto" loop />
+
+      {!opened && (
+        <div className="opening-gate">
+          <video ref={openingVideo} className="opening-video" muted playsInline preload="auto" onEnded={finishOpening}>
+            <source media="(max-width: 767px)" src="/img/portrait.mp4" type="video/mp4" />
+            <source src="/img/landscape.mp4" type="video/mp4" />
+          </video>
+          {!opening ? (
+            <button className="opening-trigger" type="button" onClick={beginOpening}>
+              <span>Ishanthika & Nirmal</span><small>Tap to open</small>
+            </button>
+          ) : (
+            <button className="opening-skip" type="button" onClick={finishOpening}>Skip</button>
+          )}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      )}
+
+      {opened && (
+        <button className={`music-toggle${musicPlaying ? " is-playing" : ""}`} type="button" onClick={toggleMusic} aria-label={musicPlaying ? "Pause music" : "Play music"}>
+          <span aria-hidden="true">♫</span>
+        </button>
+      )}
+
+      <section className="hero" id="home">
+        <div className="hero-slider">
+          {slides.map(([src, alt], index) => (
+            <div className="hero-slide-layer" style={{ opacity: activeSlide === index ? 1 : 0 }} key={src}>
+              <Image
+                className="hero-slide"
+                src={src}
+                alt={alt}
+                width={1920}
+                height={1080}
+                priority={index === 0}
+                sizes="100vw"
+                style={{ animation: activeSlide === index ? "hero-zoom 4s ease-out forwards" : "none", transform: activeSlide === index ? undefined : "scale(1)" }}
+              />
+            </div>
+          ))}
         </div>
-      </main>
-    </div>
+        <div className="hero-shade" />
+        <div className="hero-copy">
+          <p className="section-label on-dark">Save the date</p>
+          <h1>Ishanthika &<br />Nirmal</h1>
+          <div className="hero-date"><span>August</span><strong>03</strong><span>2026</span></div>
+          <a className="scroll-cue" href="#couple"><span>Scroll Down</span><i>⌄</i></a>
+        </div>
+        <div className="slider-dots" aria-label="Wedding photos">
+          {slides.map(([, alt], index) => (
+            <button className={activeSlide === index ? "active" : ""} key={alt} type="button" aria-label={`Go to slide ${index + 1}`} aria-current={activeSlide === index ? "true" : undefined} onClick={() => setActiveSlide(index)} />
+          ))}
+        </div>
+      </section>
+
+      <section className="couple-section page-section" id="couple">
+        <div className="couple-grid">
+          <article className="person-card">
+            <Image src="/img/bride.jpg" alt="Ishanthika — the bride" fill sizes="(max-width: 700px) 288px, 288px" />
+            <div className="person-shade" />
+            <div className="person-copy"><h2>Ishanthika</h2><span>The Bride</span><p>With a heart full of love and gratitude, I can&apos;t wait to begin this beautiful journey with the one who makes every moment brighter.</p></div>
+          </article>
+          <article className="person-card">
+            <Image src="/img/groom.jpg" alt="Nirmal — the groom" fill sizes="(max-width: 700px) 288px, 288px" />
+            <div className="person-shade" />
+            <div className="person-copy"><h2>Nirmal</h2><span>The Groom</span><p>Every love story is special, but ours is my favorite. I&apos;m blessed to share this journey with the most amazing person.</p></div>
+          </article>
+        </div>
+        <div className="marriage-note">
+          <div className="heart" aria-hidden="true">♡</div>
+          <p className="section-label">We are</p>
+          <h2 className="section-title">Getting Married</h2>
+          <p>From the moment our paths crossed, we knew that our love story was just beginning. Every day since has been a chapter filled with laughter, growth, and unforgettable memories. As we take the next step in our journey together, we invite you to share in the joy of this new chapter.</p>
+          <em>— Nirmal & Ishanthika —</em>
+        </div>
+      </section>
+
+      <section className="location-section page-section" id="location">
+        <div className="section-heading"><p className="section-label">Join us at</p><h2 className="section-title">Location</h2></div>
+        <div className="location-card">
+          <div className="location-pin" aria-hidden="true">⌖</div>
+          <h3>Hotel Kashyapa Banquet hall</h3>
+          <p>Awissawella</p>
+          <span className="time-chip">▣ &nbsp; 08:30 AM to 4:00 PM</span>
+          <div className="map-frame"><iframe src={mapSrc} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Wedding venue location" /></div>
+          <div className="location-actions">
+            <a className="primary-button" href="https://maps.app.goo.gl/2jDzBzuunLuxypg89" target="_blank" rel="noreferrer">⌖ &nbsp; Open in maps ↗</a>
+            <a className="secondary-button" href={calendarUrl} target="_blank" rel="noreferrer">▣ &nbsp; Add to calendar ↓</a>
+          </div>
+          <a className="calendar-link" href={calendarUrl} target="_blank" rel="noreferrer">Or add to Google Calendar</a>
+        </div>
+      </section>
+
+      <section className="timeline-section page-section">
+        <div className="section-heading"><p className="section-label">Our celebration</p><h2 className="section-title">Timeline</h2></div>
+        <div className="timeline-scroll">
+          <ol>
+            {timeline.map(([time, icon, title, description]) => (
+              <li key={time}><time>{time}</time><span className="timeline-icon" aria-hidden="true">{icon}</span><h3>{title}</h3><p>{description}</p></li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="rsvp-section page-section" id="rsvp">
+        <div className="rsvp-wrap">
+          <p className="section-label">Be Our Guest</p>
+          <h2 className="section-title">RSVP</h2>
+          <p className="rsvp-deadline">Kindly respond by July 03, 2026</p>
+          <form aria-label="RSVP placeholder">
+            <span className="form-note">RSVP form placeholder</span>
+            <label>Full Name *<input type="text" placeholder="Your full name" disabled /></label>
+            <label>Email<input type="email" placeholder="your@email.com" disabled /></label>
+            <fieldset disabled><legend>Will you be attending? *</legend><div className="choice-row"><button type="button">Joyfully Accept</button><button type="button">Regretfully Decline</button></div></fieldset>
+            <label>Message for the Couple<textarea placeholder="Share your wishes..." rows={3} disabled /></label>
+            <button className="send-button" type="button" disabled>♡ &nbsp; Send RSVP</button>
+          </form>
+        </div>
+      </section>
+
+      <footer><h3>Ishanthika & Nirmal</h3><p>August 03 2026</p><p>Ishanthika: 0762735453 &nbsp;|&nbsp; Nirmal: 0766186327</p><small>© 2026 SicatDigital | All rights reserved</small></footer>
+    </main>
   );
 }
