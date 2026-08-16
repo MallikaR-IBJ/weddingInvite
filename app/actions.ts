@@ -62,6 +62,7 @@ export async function submitRsvp(
         ...data,
         attending: attending === "yes",
         whoAttending: attending === "yes" ? whoAttending : null,
+        guestCount: attending === "yes" ? 1 : 0,
         email: email || null,
         message: message || null,
       },

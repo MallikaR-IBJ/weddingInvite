@@ -27,7 +27,7 @@ const rsvpSchema = z.object({
   message: z.string().trim().max(1000),
 });
 
-const destination = (tab: string, notice?: string, error?: string) => {
+const destination = (tab: string, notice?: string, error?: string): never => {
   const params = new URLSearchParams({ tab });
   if (notice) params.set("notice", notice);
   if (error) params.set("error", error);
@@ -58,7 +58,7 @@ export async function createExpectedGuest(formData: FormData) {
   const result = expectedGuestSchema.safeParse(Object.fromEntries(formData));
   if (!result.success) destination("expected", undefined, "Enter a name, party, and invited guest count.");
   try {
-    await prisma.expectedGuest.create({ data: result.data });
+    await prisma.expectedGuest.create({ data: result.data! });
   } catch (error) {
     destination("expected", undefined, databaseError(error));
   }
@@ -71,7 +71,7 @@ export async function updateExpectedGuest(guestId: string, formData: FormData) {
   const result = expectedGuestSchema.safeParse(Object.fromEntries(formData));
   if (!result.success) destination("expected", undefined, "Enter a name, party, and invited guest count.");
   try {
-    await prisma.expectedGuest.update({ where: { id: guestId }, data: result.data });
+    await prisma.expectedGuest.update({ where: { id: guestId }, data: result.data! });
   } catch (error) {
     destination("expected", undefined, databaseError(error));
   }
@@ -109,7 +109,7 @@ export async function createRsvp(formData: FormData) {
   const result = parseRsvp(formData);
   if (!result.success) destination(tab, undefined, "Check the response details and try again.");
   try {
-    await prisma.rsvp.create({ data: rsvpData(result.data) });
+    await prisma.rsvp.create({ data: rsvpData(result.data!) });
   } catch (error) {
     destination(tab, undefined, databaseError(error));
   }
@@ -123,7 +123,7 @@ export async function updateRsvp(rsvpId: string, formData: FormData) {
   const result = parseRsvp(formData);
   if (!result.success) destination(tab, undefined, "Check the response details and try again.");
   try {
-    await prisma.rsvp.update({ where: { id: rsvpId }, data: rsvpData(result.data) });
+    await prisma.rsvp.update({ where: { id: rsvpId }, data: rsvpData(result.data!) });
   } catch (error) {
     destination(tab, undefined, databaseError(error));
   }
@@ -144,7 +144,7 @@ export async function createParty(formData: FormData) {
   const result = partySchema.safeParse(Object.fromEntries(formData));
   if (!result.success) destination("parties", undefined, "Enter a party name and maximum guest count.");
   try {
-    await prisma.invitingParty.create({ data: result.data });
+    await prisma.invitingParty.create({ data: result.data! });
   } catch (error) {
     destination("parties", undefined, databaseError(error));
   }
@@ -157,7 +157,7 @@ export async function updateParty(partyId: string, formData: FormData) {
   const result = partySchema.safeParse(Object.fromEntries(formData));
   if (!result.success) destination("parties", undefined, "Enter a party name and maximum guest count.");
   try {
-    await prisma.invitingParty.update({ where: { id: partyId }, data: result.data });
+    await prisma.invitingParty.update({ where: { id: partyId }, data: result.data! });
   } catch (error) {
     destination("parties", undefined, databaseError(error));
   }

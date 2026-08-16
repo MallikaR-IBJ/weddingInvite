@@ -8,37 +8,37 @@ datasource db {
 }
 
 model Rsvp {
-  id           String           @id @default(cuid())
-  fullName     String
-  phoneNumber  String           @unique
-  email        String?
-  attending    Boolean
-  whoAttending AttendanceGroup?
-  guestCount   Int              @default(0)
-  expectedGuestId String?       @unique
-  expectedGuest ExpectedGuest?  @relation(fields: [expectedGuestId], references: [id], onDelete: SetNull)
-  message      String?
-  createdAt    DateTime         @default(now())
+  id              String           @id @default(cuid())
+  fullName        String
+  phoneNumber     String           @unique
+  email           String?
+  attending       Boolean
+  whoAttending    AttendanceGroup?
+  guestCount      Int              @default(0)
+  expectedGuestId String?          @unique
+  expectedGuest   ExpectedGuest?   @relation(fields: [expectedGuestId], references: [id], onDelete: SetNull)
+  message         String?
+  createdAt       DateTime         @default(now())
 
   @@index([createdAt])
 }
 
 model InvitingParty {
-  id            String          @id @default(cuid())
-  name          String          @unique
-  maxGuestCount Int
+  id             String          @id @default(cuid())
+  name           String          @unique
+  maxGuestCount  Int
   expectedGuests ExpectedGuest[]
-  createdAt     DateTime        @default(now())
+  createdAt      DateTime        @default(now())
 }
 
 model ExpectedGuest {
-  id             String         @id @default(cuid())
+  id             String        @id @default(cuid())
   name           String
-  invitedPersons Int            @default(1)
+  invitedPersons Int           @default(1)
   partyId        String
-  party          InvitingParty  @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  party          InvitingParty @relation(fields: [partyId], references: [id], onDelete: Cascade)
   rsvp           Rsvp?
-  createdAt      DateTime       @default(now())
+  createdAt      DateTime      @default(now())
 
   @@index([partyId])
 }
