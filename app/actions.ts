@@ -1,0 +1,83 @@
+"use server";
+
+import { z } from "zod";
+import { prisma } from "@/lib/prisma";
+
+const normalizePhoneNumber = (value: string) =>
+  `+94${value.replace(/\D/g, "").replace(/^(?:0094|94|0)/, "")}`;
+
+const rsvpSchema = z.object({
+  fullName: z.string().trim().min(2, "Enter your full name").max(120),
+  phoneNumber: z.string().transform(normalizePhoneNumber)
+    .pipe(z.string().regex(/^\+94\d{9,10}$/, "Enter a valid Sri Lankan phone number")),
+  email: z.string().trim().max(254).refine(
+    (value) => value === "" || z.email().safeParse(value).success,
+    "Enter a valid email address",
+  ),
+  attending: z.enum(["yes", "no"], { error: "Choose whether you will attend" }),
+  whoAttending: z.enum(["ONLY_MYSELF", "MYSELF_AND_OTHER_INVITEES", "COMPLICATED"]).optional(),
+  message: z.string().trim().max(1000, "Keep your message under 1,000 characters"),
+}).superRefine((data, context) => {
+  if (data.attending === "yes" && !data.whoAttending) {
+    context.addIssue({
+      code: "custom",
+      path: ["whoAttending"],
+      message: "Choose who will be attending",
+    });
+  }
+});
+
+export type RsvpState = {
+  status: "idle" | "error" | "success";
+  message?: string;
+  errors?: Record<string, string[]>;
+};
+
+export async function submitRsvp(
+  _previousState: RsvpState,
+  formData: FormData,
+): Promise<RsvpState> {
+  const result = rsvpSchema.safeParse({
+    fullName: formData.get("fullName"),
+    phoneNumber: formData.get("phoneNumber"),
+    email: formData.get("email") ?? "",
+    attending: formData.get("attending"),
+    whoAttending: formData.get("whoAttending") ?? undefined,
+    message: formData.get("message") ?? "",
+  });
+
+  if (!result.success) {
+    return {
+      status: "error",
+      message: "Please check the highlighted fields.",
+      errors: result.error.flatten().fieldErrors,
+    };
+  }
+
+  const { attending, whoAttending, email, message, ...data } = result.data;
+
+  try {
+    await prisma.rsvp.create({
+      data: {
+        ...data,
+        attending: attending === "yes",
+        whoAttending: attending === "yes" ? whoAttending : null,
+        email: email || null,
+        message: message || null,
+      },
+    });
+    return { status: "success", message: "Thank you! Your RSVP has been received." };
+  } catch (error) {
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "P2002") {
+      return {
+        status: "error",
+        message: "An RSVP already exists for this phone number. Please contact the bride or groom directly for any changes.",
+      };
+    }
+
+    return {
+      status: "error",
+      message: "We couldn't save your RSVP. Please try again.",
+    };
+  }
+}

@@ -71,7 +71,6 @@ p,h1,h2,h3 { margin-top:0; }
 .primary-button,.secondary-button { padding:.9rem 1.4rem; border-radius:99px; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; }
 .primary-button { background:var(--gold); color:white; }
 .secondary-button { border:1px solid #d9c9aa; }
-.calendar-link { display:block; width:max-content; margin:1rem auto 0; border-bottom:1px solid currentColor; color:#7d6847; font-size:.75rem; }
 
 .timeline-section { padding-right:1.25rem; padding-left:1.25rem; background:var(--bg); }
 .timeline-scroll { overflow-x:auto; padding:1rem 0 1.5rem; scrollbar-color:var(--gold) transparent; }
@@ -88,12 +87,30 @@ p,h1,h2,h3 { margin-top:0; }
 .rsvp-deadline { margin:1rem 0 2.5rem; color:var(--muted); font-family:var(--script); font-size:1.25rem; }
 .rsvp-wrap form { padding:2.2rem; border-radius:1rem; background:white; text-align:left; }
 .form-note { display:inline-block; margin-bottom:1.5rem; padding:.45rem .7rem; border-radius:.3rem; background:var(--champagne); color:var(--gold-dark); font-size:.55rem; letter-spacing:.15em; text-transform:uppercase; }
-.rsvp-wrap label,.rsvp-wrap legend { display:block; margin:0 0 1.35rem; color:#5c5143; font-size:.72rem; }
-.rsvp-wrap input,.rsvp-wrap textarea { display:block; width:100%; margin-top:.5rem; padding:.75rem .8rem; border:1px solid #ddd1bc; border-radius:.4rem; background:#fff; color:#756d62; resize:vertical; }
-.rsvp-wrap fieldset { margin:0; padding:0; border:0; }
+.rsvp-wrap label,.rsvp-wrap legend { display:block; color:#5c5143; font-size:.72rem; }
+.rsvp-wrap form > label { margin-top:1.35rem; }
+.rsvp-wrap label span { color:var(--muted); }
+.rsvp-wrap input,.rsvp-wrap textarea { display:block; width:100%; margin-top:.5rem; padding:.75rem .8rem; border:1px solid #ddd1bc; border-radius:.4rem; background:#fff; color:#5c5143; resize:vertical; }
+.rsvp-wrap input:focus,.rsvp-wrap textarea:focus { border-color:var(--gold); outline:0; box-shadow:0 0 0 3px #98723c1f; }
+.rsvp-wrap input[aria-invalid="true"],.rsvp-wrap textarea[aria-invalid="true"] { border-color:#a94c43; }
+.rsvp-wrap fieldset { margin:1.35rem 0 0; padding:0; border:0; }
+.rsvp-wrap legend { margin-bottom:.5rem; }
 .choice-row { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
-.choice-row button { padding:.8rem .5rem; border:2px solid #ddd1bc; border-radius:.4rem; background:white; color:#6d6253; font-size:.7rem; }
-.send-button { width:100%; padding:.9rem; border:0; border-radius:.4rem; background:var(--gold); color:white; font-size:.72rem; opacity:.55; }
+.who-attending-options { grid-template-columns:1fr; }
+.choice-option { position:relative; margin:0; cursor:pointer; }
+.choice-option input { position:absolute; width:1px; height:1px; margin:0; opacity:0; }
+.choice-option span { display:block; padding:.8rem .5rem; border:2px solid #ddd1bc; border-radius:.4rem; color:#6d6253; font-size:.7rem; text-align:center; transition:border-color .2s,background .2s; }
+.choice-option input:checked + span { border-color:var(--gold); background:var(--champagne); color:var(--gold-dark); }
+.choice-option input:focus-visible + span { outline:2px solid var(--gold-dark); outline-offset:3px; }
+.field-error { margin:.35rem 0 0; color:#a94c43; font-size:.66rem; }
+.form-status { margin:1.2rem 0 0; font-size:.72rem; line-height:1.5; }
+.form-error { color:#a94c43; }
+.send-button { width:100%; margin-top:1.35rem; padding:.9rem; border:0; border-radius:.4rem; background:var(--gold); color:white; font-size:.72rem; cursor:pointer; }
+.send-button:disabled { cursor:wait; opacity:.6; }
+.form-success { padding:3rem 2rem; border-radius:1rem; background:white; text-align:center; }
+.form-success span { color:var(--gold); font-family:var(--script); font-size:3rem; }
+.form-success p { margin:.7rem 0 0; color:#5c5143; line-height:1.6; }
+.rsvp-contact-note { margin:1.25rem auto 0; color:var(--muted); font-size:.7rem; line-height:1.6; }
 
 footer { padding:4rem 1.5rem; background:#363127; color:white; text-align:center; }
 footer h3 { margin:0; font-family:var(--script); font-size:2rem; font-style:italic; font-weight:400; }

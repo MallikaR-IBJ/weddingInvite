@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { RsvpForm } from "./rsvp-form";
 
 const slides = [
   ["/img/hero-bg.jpg", "Hiruni and Ravindu walking on the beach"],
@@ -21,7 +22,7 @@ const timeline = [
 
 const mapSrc = "https://www.google.com/maps?q=7.3027672,80.6367887&output=embed";
 const mapUrl = "https://maps.app.goo.gl/ZJ6S4TzJ5DrnDfjH8";
-const calendarUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Hiruni+%26+Ravindu+Wedding&details=Poruwa+Ceremony+at+9.45+AM&dates=20260803T030000Z/20260803T103000Z&location=Hotel+Kashyapa+Banquet+hall";
+const calendarUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Hiruni+%26+Ravindu+Wedding&dates=20261214T093000%2F20261214T153000&ctz=Asia%2FColombo&details=Wedding+celebration&location=The+Grand+Kandyan+Hotel%2C+Kandy%2C+Sri+Lanka";
 
 export default function Home() {
   const [opening, setOpening] = useState(false);
@@ -175,7 +176,6 @@ export default function Home() {
             <a className="primary-button" href={mapUrl} target="_blank" rel="noreferrer">⌖ &nbsp; Open in maps ↗</a>
             <a className="secondary-button" href={calendarUrl} target="_blank" rel="noreferrer">▣ &nbsp; Add to calendar ↓</a>
           </div>
-          <a className="calendar-link" href={calendarUrl} target="_blank" rel="noreferrer">Or add to Google Calendar</a>
         </div>
       </section>
 
@@ -195,14 +195,8 @@ export default function Home() {
           <p className="section-label">Be Our Guest</p>
           <h2 className="section-title">RSVP</h2>
           <p className="rsvp-deadline">Kindly respond by October 20, 2026</p>
-          <form aria-label="RSVP placeholder">
-            <span className="form-note">RSVP form placeholder</span>
-            <label>Full Name *<input type="text" placeholder="Your full name" disabled /></label>
-            <label>Email<input type="email" placeholder="your@email.com" disabled /></label>
-            <fieldset disabled><legend>Will you be attending? *</legend><div className="choice-row"><button type="button">Joyfully Accept</button><button type="button">Regretfully Decline</button></div></fieldset>
-            <label>Message for the Couple<textarea placeholder="Share your wishes..." rows={3} disabled /></label>
-            <button className="send-button" type="button" disabled>♡ &nbsp; Send RSVP</button>
-          </form>
+          <RsvpForm />
+          <p className="rsvp-contact-note">For any changes, please contact the couple directly using the phone numbers below.</p>
         </div>
       </section>
 
