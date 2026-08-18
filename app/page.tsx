@@ -67,7 +67,11 @@ export default function Home() {
 
   const beginOpening = () => {
     setOpening(true);
-    envelopeSound.current?.play().catch(() => undefined);
+    const envelope = envelopeSound.current;
+    if (envelope) {
+      envelope.volume = 0.25;
+      envelope.play().catch(() => undefined);
+    }
     const music = backgroundMusic.current;
     if (music) {
       music.volume = 0;
@@ -95,7 +99,12 @@ export default function Home() {
   const cueOpeningFade = () => {
     const video = openingVideo.current;
     if (!video || finishingOpening || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (video.duration - video.currentTime <= 1.4) setFinishingOpening(true);
+    if (video.duration - video.currentTime <= 2.8) setFinishingOpening(true);
+  };
+
+  const skipOpening = () => {
+    setFinishingOpening(false);
+    finishOpening();
   };
 
   const toggleMusic = () => {
@@ -123,10 +132,14 @@ export default function Home() {
             <button className="opening-trigger" type="button" onClick={beginOpening}>
               <span>Hiruni & Ravindu</span><small>Tap to open</small>
             </button>
-          ) : !finishingOpening ? (
-            <button className="opening-skip" type="button" onClick={finishOpening}>Skip</button>
-          ) : null}
+          ) : (
+            <button className="opening-skip" type="button" onClick={skipOpening}>Skip</button>
+          )}
         </div>
+      )}
+
+      {opened && finishingOpening && (
+        <div className="opening-wash-out" aria-hidden="true" onAnimationEnd={() => setFinishingOpening(false)} />
       )}
 
       {opened && (

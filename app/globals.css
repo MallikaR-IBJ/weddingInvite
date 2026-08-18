@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Josefin+Sans:wght@300;400&family=Playfair+Display:wght@400;500&display=swap');
 
-:root { --bg:#fcfaf5; --ink:#352f27; --muted:#857968; --gold:#98723c; --gold-dark:#6f5126; --champagne:#f4ecd9; --white:#fffdfa; --display:"Playfair Display",Georgia,serif; --script:"Cormorant Garamond",Georgia,serif; --sans:"Josefin Sans","Segoe UI",sans-serif; }
+:root { --bg:#fcfaf5; --ink:#352f27; --muted:#857968; --gold:#98723c; --gold-dark:#6f5126; --champagne:#f4ecd9; --veil:#f1eadf; --white:#fffdfa; --display:"Playfair Display",Georgia,serif; --script:"Cormorant Garamond",Georgia,serif; --sans:"Josefin Sans","Segoe UI",sans-serif; }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 body { margin:0; overflow-x:hidden; background:var(--bg); color:var(--ink); font-family:var(--sans); font-weight:300; }
@@ -15,9 +15,9 @@ p,h1,h2,h3 { margin-top:0; }
 .section-heading { margin-bottom:3rem; text-align:center; }
 
 .opening-gate { position:fixed; z-index:1000; inset:0; overflow:hidden; background:#c7b485 url('/img/opening-landscape-champagne.jpg') center/cover no-repeat; color:white; }
-.opening-gate::after { content:""; position:absolute; z-index:3; inset:0; pointer-events:none; background:white; opacity:0; }
-.opening-gate.is-finishing { pointer-events:none; }
-.opening-gate.is-finishing::after { animation:opening-white-fade 1.2s linear forwards; }
+.opening-gate::after { content:""; position:absolute; z-index:3; inset:0; pointer-events:none; background:var(--veil); opacity:0; }
+.opening-gate.is-finishing::after { animation:opening-wash-in 2.6s cubic-bezier(.4,0,.2,1) forwards; }
+.opening-wash-out { position:fixed; z-index:101; inset:0; pointer-events:none; background:var(--veil); animation:opening-wash-out 1.6s cubic-bezier(.4,0,.2,1) forwards; }
 .opening-video { width:100%; height:100%; object-fit:cover; background:transparent; }
 .opening-trigger { position:absolute; inset:0; width:100%; padding-top:53vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.45rem; border:0; background:linear-gradient(180deg,transparent 45%,rgba(39,28,13,.36)); color:white; cursor:pointer; }
 .opening-trigger span { font-family:var(--script); font-size:clamp(1.6rem,3vw,2.2rem); font-style:italic; }
@@ -25,7 +25,8 @@ p,h1,h2,h3 { margin-top:0; }
 .opening-trigger small { animation:pulse 2s ease-in-out infinite; }
 .opening-skip { position:absolute; right:2rem; bottom:2rem; padding:.8rem; border:0; background:transparent; color:rgba(255,255,255,.9); }
 @keyframes pulse { 50% { opacity:.52; } }
-@keyframes opening-white-fade { from { opacity:0; } to { opacity:1; } }
+@keyframes opening-wash-in { from { opacity:0; } to { opacity:1; } }
+@keyframes opening-wash-out { from { opacity:1; } to { opacity:0; } }
 .music-toggle { position:fixed; z-index:50; right:1.25rem; bottom:1.25rem; display:grid; place-items:center; width:2.8rem; height:2.8rem; border:1px solid rgba(255,255,255,.5); border-radius:50%; background:rgba(48,41,31,.84); color:white; box-shadow:0 4px 18px #30291f33; }
 .music-toggle span { opacity:.55; }
 .music-toggle.is-playing span { opacity:1; animation:music-pulse 1.7s ease-in-out infinite; }
