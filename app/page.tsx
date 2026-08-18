@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { RsvpForm } from "./rsvp-form";
 
 const slides = [
-  ["/img/hero-bg.jpg", "Hiruni and Ravindu walking on the beach"],
-  ["/img/hero-2.jpg", "Hiruni and Ravindu beneath glowing lanterns"],
+  ["/img/hero-bg.jpg", "Hiruni and Ravindu showing their wedding rings over white lilies", "/img/hero-1_sp.webp"],
+  ["/img/hero-2.jpg", "Hiruni and Ravindu holding hands in the garden", "/img/hero-2_sp.webp"],
   ["/img/hero-3.webp", "Hiruni and Ravindu dancing beneath an archway", "/img/hero-3_sp.webp"],
 ] as const;
 
@@ -26,18 +26,35 @@ const calendarUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE
 
 export default function Home() {
   const [opening, setOpening] = useState(false);
+  const [finishingOpening, setFinishingOpening] = useState(false);
   const [opened, setOpened] = useState(false);
+  const [invitationOpen, setInvitationOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const openingVideo = useRef<HTMLVideoElement>(null);
   const envelopeSound = useRef<HTMLAudioElement>(null);
   const backgroundMusic = useRef<HTMLAudioElement>(null);
+  const invitationButton = useRef<HTMLButtonElement>(null);
+  const invitationCloseButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    document.body.style.overflow = opened ? "" : "hidden";
+    document.body.style.overflow = opened && !invitationOpen ? "" : "hidden";
     window.scrollTo(0, 0);
     return () => { document.body.style.overflow = ""; };
-  }, [opened]);
+  }, [opened, invitationOpen]);
+
+  useEffect(() => {
+    if (!invitationOpen) {
+      if (opened) invitationButton.current?.focus();
+      return;
+    }
+    invitationCloseButton.current?.focus();
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setInvitationOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [opened, invitationOpen]);
 
   useEffect(() => {
     if (!opened) return;
@@ -71,7 +88,17 @@ export default function Home() {
       music.volume = 0.3;
       music.play().then(() => setMusicPlaying(true)).catch(() => setMusicPlaying(false));
     }
+    setInvitationOpen(true);
     setOpened(true);
+  };
+
+  const endOpening = () => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      finishOpening();
+      return;
+    }
+    setFinishingOpening(true);
+    window.setTimeout(finishOpening, 900);
   };
 
   const toggleMusic = () => {
@@ -90,8 +117,8 @@ export default function Home() {
       <audio ref={backgroundMusic} src="/img/background.mp3" preload="auto" loop />
 
       {!opened && (
-        <div className="opening-gate">
-          <video ref={openingVideo} className="opening-video" muted playsInline preload="auto" onEnded={finishOpening}>
+        <div className={`opening-gate${finishingOpening ? " is-finishing" : ""}`}>
+          <video ref={openingVideo} className="opening-video" muted playsInline preload="auto" onEnded={endOpening}>
             <source media="(max-width: 767px)" src="/img/portrait-champagne.mp4" type="video/mp4" />
             <source src="/img/landscape-champagne.mp4" type="video/mp4" />
           </video>
@@ -99,16 +126,57 @@ export default function Home() {
             <button className="opening-trigger" type="button" onClick={beginOpening}>
               <span>Hiruni & Ravindu</span><small>Tap to open</small>
             </button>
-          ) : (
+          ) : !finishingOpening ? (
             <button className="opening-skip" type="button" onClick={finishOpening}>Skip</button>
-          )}
+          ) : null}
         </div>
       )}
 
       {opened && (
-        <button className={`music-toggle${musicPlaying ? " is-playing" : ""}`} type="button" onClick={toggleMusic} aria-label={musicPlaying ? "Pause music" : "Play music"}>
-          <span aria-hidden="true">♫</span>
-        </button>
+        <>
+          {!invitationOpen && (
+            <button ref={invitationButton} className="invitation-toggle" type="button" onClick={() => setInvitationOpen(true)} aria-label="Open wedding invitation">
+              <span aria-hidden="true">✉</span>
+            </button>
+          )}
+          <button className={`music-toggle${musicPlaying ? " is-playing" : ""}`} type="button" onClick={toggleMusic} aria-label={musicPlaying ? "Pause music" : "Play music"}>
+            <span aria-hidden="true">♫</span>
+          </button>
+        </>
+      )}
+
+      {opened && invitationOpen && (
+        <div className="invitation-backdrop" onClick={(event) => event.target === event.currentTarget && setInvitationOpen(false)}>
+          <article className="invitation-card" role="dialog" aria-modal="true" aria-labelledby="invitation-title" aria-describedby="invitation-description">
+            <button ref={invitationCloseButton} className="invitation-close" type="button" onClick={() => setInvitationOpen(false)} aria-label="Close wedding invitation">×</button>
+            <svg className="invitation-canopy" viewBox="0 0 600 128" aria-hidden="true">
+              <path className="canopy-line" d="M34 115C112 15 488 15 566 115" />
+              <path className="canopy-line fine" d="M57 115C131 38 469 38 543 115" />
+              <path className="canopy-leaves" d="M76 93l12 18 8-22 14 17 6-23 16 15 3-24 18 13v-24l19 11 3-24 18 9 6-24 17 8 9-23 16 6 12-22 15 5 15-20 14 4 15-18 15 18 14-4 15 20 15-5 12 22 16-6 9 23 17-8 6 24 18-9 3 24 19-11v24l18-13 3 24 16-15 6 23 14-17 8 22 12-18" />
+              <path className="canopy-lotus" d="M300 93c-18-13-22-31 0-53 22 22 18 40 0 53Zm0 0c-25-3-38-17-31-46 27 10 35 27 31 46Zm0 0c25-3 38-17 31-46-27 10-35 27-31 46Zm0 0c-17 9-34 7-48-10 20-14 37-9 48 10Zm0 0c17 9 34 7 48-10-20-14-37-9-48 10Z" />
+            </svg>
+
+            <div className="invitation-copy">
+              <p className="invitation-kicker">Together with their families</p>
+              <h2 id="invitation-title"><span>Hiruni</span><i>&amp;</i><span>Ravindu</span></h2>
+              <p id="invitation-description" className="invitation-request">request the pleasure of the company of</p>
+              <p className="invitee-name">Name Name</p>
+              <p className="invitation-request">to celebrate their marriage</p>
+
+              <div className="invitation-date" aria-label="Monday, December 14, 2026">
+                <span>December</span><strong>14</strong><span>Monday<br />2026</span>
+              </div>
+
+              <p className="invitation-time">9:30 in the morning <span>until</span> 3:30 in the afternoon</p>
+              <div className="invitation-venue">
+                <small>At</small>
+                <strong>The Grand Kandyan Hotel</strong>
+                <span>Kandy, Sri Lanka</span>
+              </div>
+            </div>
+            <div className="invitation-seal" aria-hidden="true"><span>H</span><i>&amp;</i><span>R</span></div>
+          </article>
+        </div>
       )}
 
       <section className="hero" id="home">
@@ -125,7 +193,6 @@ export default function Home() {
                   height={1080}
                   loading="eager"
                   sizes="100vw"
-                  unoptimized={Boolean(mobileSrc)}
                   style={{ animation: activeSlide === index ? "hero-zoom 4s ease-out forwards" : "none", transform: activeSlide === index ? undefined : "scale(1)" }}
                 />
               </picture>
@@ -135,9 +202,8 @@ export default function Home() {
         <div className="hero-shade" />
         <div className="hero-copy">
           <p className="section-label on-dark">Save the date</p>
-          <h1>Hiruni<br />&<br />Ravindu</h1>
+          <h1>Hiruni&<br />Ravindu</h1>
           <div className="hero-date"><span>December</span><strong>14</strong><span>2026</span></div>
-          <a className="scroll-cue" href="#couple"><span>Scroll Down</span><i>⌄</i></a>
         </div>
         <div className="slider-dots" aria-label="Wedding photos">
           {slides.map(([src], index) => (
