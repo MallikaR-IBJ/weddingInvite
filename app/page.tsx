@@ -92,13 +92,10 @@ export default function Home() {
     setOpened(true);
   };
 
-  const endOpening = () => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      finishOpening();
-      return;
-    }
-    setFinishingOpening(true);
-    window.setTimeout(finishOpening, 900);
+  const cueOpeningFade = () => {
+    const video = openingVideo.current;
+    if (!video || finishingOpening || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (video.duration - video.currentTime <= 1.4) setFinishingOpening(true);
   };
 
   const toggleMusic = () => {
@@ -118,7 +115,7 @@ export default function Home() {
 
       {!opened && (
         <div className={`opening-gate${finishingOpening ? " is-finishing" : ""}`}>
-          <video ref={openingVideo} className="opening-video" muted playsInline preload="auto" onEnded={endOpening}>
+          <video ref={openingVideo} className="opening-video" muted playsInline preload="auto" onTimeUpdate={cueOpeningFade} onEnded={finishOpening}>
             <source media="(max-width: 767px)" src="/img/portrait-champagne.mp4" type="video/mp4" />
             <source src="/img/landscape-champagne.mp4" type="video/mp4" />
           </video>
