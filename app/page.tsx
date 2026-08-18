@@ -7,9 +7,7 @@ import { RsvpForm } from "./rsvp-form";
 const slides = [
   ["/img/hero-bg.jpg", "Hiruni and Ravindu walking on the beach"],
   ["/img/hero-2.jpg", "Hiruni and Ravindu beneath glowing lanterns"],
-  ["/img/hero-3.jpg", "Hiruni and Ravindu by the railway at sunset"],
-  ["/img/hero-4.jpg", "Hiruni and Ravindu dancing beneath an archway"],
-  ["/img/hero-5.jpg", "Hiruni and Ravindu walking together in the garden"],
+  ["/img/hero-3.webp", "Hiruni and Ravindu dancing beneath an archway", "/img/hero-3_sp.webp"],
 ] as const;
 
 const timeline = [
@@ -115,31 +113,35 @@ export default function Home() {
 
       <section className="hero" id="home">
         <div className="hero-slider">
-          {slides.map(([src, alt], index) => (
+          {slides.map(([src, alt, mobileSrc], index) => (
             <div className="hero-slide-layer" style={{ opacity: activeSlide === index ? 1 : 0 }} key={src}>
-              <Image
-                className="hero-slide"
-                src={src}
-                alt={alt}
-                width={1920}
-                height={1080}
-                loading="eager"
-                sizes="100vw"
-                style={{ animation: activeSlide === index ? "hero-zoom 4s ease-out forwards" : "none", transform: activeSlide === index ? undefined : "scale(1)" }}
-              />
+              <picture className="hero-picture">
+                {mobileSrc && <source media="(max-width: 767px)" srcSet={mobileSrc} />}
+                <Image
+                  className="hero-slide"
+                  src={src}
+                  alt={alt}
+                  width={1920}
+                  height={1080}
+                  loading="eager"
+                  sizes="100vw"
+                  unoptimized={Boolean(mobileSrc)}
+                  style={{ animation: activeSlide === index ? "hero-zoom 4s ease-out forwards" : "none", transform: activeSlide === index ? undefined : "scale(1)" }}
+                />
+              </picture>
             </div>
           ))}
         </div>
         <div className="hero-shade" />
         <div className="hero-copy">
           <p className="section-label on-dark">Save the date</p>
-          <h1>Hiruni &<br />Ravindu</h1>
+          <h1>Hiruni<br />&<br />Ravindu</h1>
           <div className="hero-date"><span>December</span><strong>14</strong><span>2026</span></div>
           <a className="scroll-cue" href="#couple"><span>Scroll Down</span><i>⌄</i></a>
         </div>
         <div className="slider-dots" aria-label="Wedding photos">
-          {slides.map(([, alt], index) => (
-            <button className={activeSlide === index ? "active" : ""} key={alt} type="button" aria-label={`Go to slide ${index + 1}`} aria-current={activeSlide === index ? "true" : undefined} onClick={() => setActiveSlide(index)} />
+          {slides.map(([src], index) => (
+            <button className={activeSlide === index ? "active" : ""} key={src} type="button" aria-label={`Go to slide ${index + 1}`} aria-current={activeSlide === index ? "true" : undefined} onClick={() => setActiveSlide(index)} />
           ))}
         </div>
       </section>
