@@ -69,7 +69,7 @@ export default function Home() {
     setOpening(true);
     const envelope = envelopeSound.current;
     if (envelope) {
-      envelope.volume = 0.25;
+      envelope.volume = 0.12;
       envelope.play().catch(() => undefined);
     }
     const music = backgroundMusic.current;
