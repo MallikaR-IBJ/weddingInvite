@@ -8,6 +8,8 @@ const slides = [
   ["/img/hero-bg.jpg", "Hiruni and Ravindu walking on the beach"],
   ["/img/hero-2.jpg", "Hiruni and Ravindu beneath glowing lanterns"],
   ["/img/hero-3.jpg", "Hiruni and Ravindu by the railway at sunset"],
+  ["/img/hero-4.jpg", "Hiruni and Ravindu dancing beneath an archway"],
+  ["/img/hero-5.jpg", "Hiruni and Ravindu walking together in the garden"],
 ] as const;
 
 const timeline = [
