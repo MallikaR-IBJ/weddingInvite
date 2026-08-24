@@ -237,6 +237,7 @@ export default function Home() {
           <p className="section-label on-dark">Save the date</p>
           <h1>Hiruni&<br />Ravindu</h1>
           <div className="hero-date"><span>December</span><strong>14</strong><span>2026</span></div>
+          <a className="scroll-cue" href="#couple"><span>Scroll Down</span><i>⌄</i></a>
         </div>
         <div className="slider-dots" aria-label="Wedding photos">
           {slides.map(([src], index) => (
