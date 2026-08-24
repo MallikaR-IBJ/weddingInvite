@@ -30,6 +30,7 @@ export default function Home() {
   const [finishingOpening, setFinishingOpening] = useState(false);
   const [opened, setOpened] = useState(false);
   const [invitationOpen, setInvitationOpen] = useState(false);
+  const [invitationSeen, setInvitationSeen] = useState(false);
   const [showInvitationCue, setShowInvitationCue] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [musicPlaying, setMusicPlaying] = useState(false);
@@ -167,7 +168,7 @@ export default function Home() {
               {showInvitationCue && (
                 <Image className="invitation-cue" src="/img/chalk_arrow.png" alt="" width={464} height={987} />
               )}
-              <button ref={invitationButton} className="invitation-toggle" type="button" onClick={() => { setShowInvitationCue(false); setInvitationOpen(true); }} aria-label="Open wedding invitation">
+              <button ref={invitationButton} className={`invitation-toggle${invitationSeen ? " is-seen" : ""}`} type="button" onClick={() => { setShowInvitationCue(false); setInvitationSeen(true); setInvitationOpen(true); }} aria-label="Open wedding invitation">
                 <Icon name="mail" />
               </button>
             </>
