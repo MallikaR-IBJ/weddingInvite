@@ -29,6 +29,7 @@ export default function Home() {
   const [finishingOpening, setFinishingOpening] = useState(false);
   const [opened, setOpened] = useState(false);
   const [invitationOpen, setInvitationOpen] = useState(false);
+  const [showInvitationCue, setShowInvitationCue] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const openingVideo = useRef<HTMLVideoElement>(null);
@@ -36,6 +37,7 @@ export default function Home() {
   const backgroundMusic = useRef<HTMLAudioElement>(null);
   const invitationButton = useRef<HTMLButtonElement>(null);
   const invitationCloseButton = useRef<HTMLButtonElement>(null);
+  const invitationWasOpen = useRef(false);
 
   useEffect(() => {
     document.body.style.overflow = opened && !invitationOpen ? "" : "hidden";
@@ -45,16 +47,18 @@ export default function Home() {
 
   useEffect(() => {
     if (!invitationOpen) {
-      if (opened) invitationButton.current?.focus();
+      if (invitationWasOpen.current) invitationButton.current?.focus();
+      invitationWasOpen.current = false;
       return;
     }
+    invitationWasOpen.current = true;
     invitationCloseButton.current?.focus();
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setInvitationOpen(false);
     };
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [opened, invitationOpen]);
+  }, [invitationOpen]);
 
   useEffect(() => {
     if (!opened) return;
@@ -77,7 +81,11 @@ export default function Home() {
       music.volume = 0;
       music.play().catch(() => undefined);
     }
-    openingVideo.current?.play().catch(finishOpening);
+    const video = openingVideo.current;
+    if (video) {
+      video.playbackRate = 1.5;
+      video.play().catch(finishOpening);
+    }
   };
 
   const finishOpening = () => {
@@ -92,14 +100,16 @@ export default function Home() {
       music.volume = 0.3;
       music.play().then(() => setMusicPlaying(true)).catch(() => setMusicPlaying(false));
     }
-    setInvitationOpen(true);
     setOpened(true);
   };
 
   const cueOpeningFade = () => {
     const video = openingVideo.current;
     if (!video || finishingOpening || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (video.duration - video.currentTime <= 2.8) setFinishingOpening(true);
+    if (video.duration - video.currentTime <= 2.8) {
+      video.playbackRate = 1;
+      setFinishingOpening(true);
+    }
   };
 
   const skipOpening = () => {
@@ -139,15 +149,28 @@ export default function Home() {
       )}
 
       {opened && finishingOpening && (
-        <div className="opening-wash-out" aria-hidden="true" onAnimationEnd={() => setFinishingOpening(false)} />
+        <div className="opening-wash-out" aria-hidden="true" onAnimationEnd={() => { setFinishingOpening(false); setShowInvitationCue(true); }} />
       )}
 
       {opened && (
         <>
           {!invitationOpen && (
-            <button ref={invitationButton} className="invitation-toggle" type="button" onClick={() => setInvitationOpen(true)} aria-label="Open wedding invitation">
-              <span aria-hidden="true">✉</span>
-            </button>
+            <>
+              {showInvitationCue && (
+                <svg className="invitation-cue" viewBox="0 0 140 100" aria-hidden="true">
+                  <defs>
+                    <filter id="chalk-texture" x="-10%" y="-10%" width="120%" height="120%">
+                      <feTurbulence type="fractalNoise" baseFrequency=".025 .16" numOctaves="2" seed="11" result="chalkNoise" />
+                      <feDisplacementMap in="SourceGraphic" in2="chalkNoise" scale="2.4" />
+                    </filter>
+                  </defs>
+                  <path filter="url(#chalk-texture)" onAnimationEnd={() => setShowInvitationCue(false)} d="M15 17C59-7 112 12 108 47C105 75 58 80 45 54C32 29 61 12 88 26C112 38 116 69 129 87M112 81L129 88L126 70" />
+                </svg>
+              )}
+              <button ref={invitationButton} className="invitation-toggle" type="button" onClick={() => { setShowInvitationCue(false); setInvitationOpen(true); }} aria-label="Open wedding invitation">
+                <span aria-hidden="true">✉</span>
+              </button>
+            </>
           )}
           <button className={`music-toggle${musicPlaying ? " is-playing" : ""}`} type="button" onClick={toggleMusic} aria-label={musicPlaying ? "Pause music" : "Play music"}>
             <span aria-hidden="true">♫</span>
