@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { Icon } from "../icons";
 import { getAdminRole } from "./auth";
 import {
   createExpectedGuest,
@@ -84,7 +85,7 @@ function RsvpFields({
 }
 
 function Empty({ children }: { children: ReactNode }) {
-  return <div className="admin-empty"><span aria-hidden="true">◇</span><p>{children}</p></div>;
+  return <div className="admin-empty"><Icon name="sparkles" /><p>{children}</p></div>;
 }
 
 export default async function AdminPage({
@@ -103,7 +104,7 @@ export default async function AdminPage({
           <h1>Guest ledger</h1>
           <p>Enter the admin password to manage invitations and responses.</p>
           <LoginForm />
-          <Link href="/">← Return to invitation</Link>
+          <Link href="/"><Icon name="arrow-left" />Return to invitation</Link>
         </section>
       </main>
     );

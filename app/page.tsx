@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { Icon, type IconName } from "./icons";
 import { RsvpForm } from "./rsvp-form";
 
 const slides = [
@@ -11,14 +12,14 @@ const slides = [
 ] as const;
 
 const timeline = [
-  ["9:30 AM", "⌖", "We Welcome You", "Welcome & seating"],
-  ["9:50 AM", "♡", "We Marry", "Sacred vows on Poruwa"],
-  ["10:25 AM", "♢", "We Raise a Toast", "Drinks & celebrations begin"],
-  ["11:30 PM", "♨", "We Dine", "Delightful wedding feast"],
-  ["12:30 PM", "♫", "We Dance", "Celebrate with music & joy"],
-  ["01:15 PM", "✦", "We Celebrate", "The ceremonial gathering"],
-  ["03:20 PM", "⌁", "We Say Goodbye", "A beautiful send-off"],
-] as const;
+  ["9:30 AM", "pin", "We Welcome You", "Welcome & seating"],
+  ["9:50 AM", "heart", "We Marry", "Sacred vows on Poruwa"],
+  ["10:25 AM", "glass", "We Raise a Toast", "Drinks & celebrations begin"],
+  ["11:30 PM", "utensils", "We Dine", "Delightful wedding feast"],
+  ["12:30 PM", "music", "We Dance", "Celebrate with music & joy"],
+  ["01:15 PM", "sparkles", "We Celebrate", "The ceremonial gathering"],
+  ["03:20 PM", "wave", "We Say Goodbye", "A beautiful send-off"],
+] as const satisfies readonly (readonly [string, IconName, string, string])[];
 
 const mapSrc = "https://www.google.com/maps?q=7.3027672,80.6367887&output=embed";
 const mapUrl = "https://maps.app.goo.gl/ZJ6S4TzJ5DrnDfjH8";
@@ -68,6 +69,13 @@ export default function Home() {
     );
     return () => window.clearInterval(timer);
   }, [opened]);
+
+  useEffect(() => {
+    if (!showInvitationCue) return;
+    const delay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 3200;
+    const timer = window.setTimeout(() => setShowInvitationCue(false), delay);
+    return () => window.clearTimeout(timer);
+  }, [showInvitationCue]);
 
   const beginOpening = () => {
     setOpening(true);
@@ -157,23 +165,15 @@ export default function Home() {
           {!invitationOpen && (
             <>
               {showInvitationCue && (
-                <svg className="invitation-cue" viewBox="0 0 140 100" aria-hidden="true">
-                  <defs>
-                    <filter id="chalk-texture" x="-10%" y="-10%" width="120%" height="120%">
-                      <feTurbulence type="fractalNoise" baseFrequency=".025 .16" numOctaves="2" seed="11" result="chalkNoise" />
-                      <feDisplacementMap in="SourceGraphic" in2="chalkNoise" scale="2.4" />
-                    </filter>
-                  </defs>
-                  <path filter="url(#chalk-texture)" onAnimationEnd={() => setShowInvitationCue(false)} d="M15 17C59-7 112 12 108 47C105 75 58 80 45 54C32 29 61 12 88 26C112 38 116 69 129 87M112 81L129 88L126 70" />
-                </svg>
+                <Image className="invitation-cue" src="/img/chalk_arrow.png" alt="" width={464} height={987} />
               )}
               <button ref={invitationButton} className="invitation-toggle" type="button" onClick={() => { setShowInvitationCue(false); setInvitationOpen(true); }} aria-label="Open wedding invitation">
-                <span aria-hidden="true">✉</span>
+                <Icon name="mail" />
               </button>
             </>
           )}
           <button className={`music-toggle${musicPlaying ? " is-playing" : ""}`} type="button" onClick={toggleMusic} aria-label={musicPlaying ? "Pause music" : "Play music"}>
-            <span aria-hidden="true">♫</span>
+            <Icon name={musicPlaying ? "pause" : "music"} />
           </button>
         </>
       )}
@@ -181,7 +181,7 @@ export default function Home() {
       {opened && invitationOpen && (
         <div className="invitation-backdrop" onClick={(event) => event.target === event.currentTarget && setInvitationOpen(false)}>
           <article className="invitation-card" role="dialog" aria-modal="true" aria-labelledby="invitation-title" aria-describedby="invitation-description">
-            <button ref={invitationCloseButton} className="invitation-close" type="button" onClick={() => setInvitationOpen(false)} aria-label="Close wedding invitation">×</button>
+            <button ref={invitationCloseButton} className="invitation-close" type="button" onClick={() => setInvitationOpen(false)} aria-label="Close wedding invitation"><Icon name="close" /></button>
             <svg className="invitation-canopy" viewBox="0 0 600 128" aria-hidden="true">
               <path className="canopy-line" d="M34 115C112 15 488 15 566 115" />
               <path className="canopy-line fine" d="M57 115C131 38 469 38 543 115" />
@@ -237,7 +237,7 @@ export default function Home() {
           <p className="section-label on-dark">Save the date</p>
           <h1>Hiruni&<br />Ravindu</h1>
           <div className="hero-date"><span>December</span><strong>14</strong><span>2026</span></div>
-          <a className="scroll-cue" href="#couple"><span>Scroll Down</span><i>⌄</i></a>
+          <a className="scroll-cue" href="#couple"><span>Scroll Down</span><Icon name="chevron-down" /></a>
         </div>
         <div className="slider-dots" aria-label="Wedding photos">
           {slides.map(([src], index) => (
@@ -260,7 +260,7 @@ export default function Home() {
           </article>
         </div>
         <div className="marriage-note">
-          <div className="heart" aria-hidden="true">♡</div>
+          <div className="heart"><Icon name="heart" /></div>
           <p className="section-label">We are</p>
           <h2 className="section-title">Getting Married</h2>
           <p>From the moment our paths crossed, we knew that our love story was just beginning. Every day since has been a chapter filled with laughter, growth, and unforgettable memories. As we take the next step in our journey together, we invite you to share in the joy of this new chapter.</p>
@@ -271,14 +271,14 @@ export default function Home() {
       <section className="location-section page-section" id="location">
         <div className="section-heading"><p className="section-label">Join us at</p><h2 className="section-title">Location</h2></div>
         <div className="location-card">
-          <div className="location-pin" aria-hidden="true">⌖</div>
+          <div className="location-pin"><Icon name="pin" /></div>
           <h3>The Grand Kandyan Hotel</h3>
           <p>Kandy</p>
-          <span className="time-chip">▣ &nbsp; 09:30 AM to 3:30 PM</span>
+          <span className="time-chip"><Icon name="clock" />09:30 AM to 3:30 PM</span>
           <div className="map-frame"><iframe src={mapSrc} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Wedding venue location" /></div>
           <div className="location-actions">
-            <a className="primary-button" href={mapUrl} target="_blank" rel="noreferrer">⌖ &nbsp; Open in maps ↗</a>
-            <a className="secondary-button" href={calendarUrl} target="_blank" rel="noreferrer">▣ &nbsp; Add to calendar ↓</a>
+            <a className="primary-button" href={mapUrl} target="_blank" rel="noreferrer"><Icon name="pin" />Open in maps<Icon name="external-link" /></a>
+            <a className="secondary-button" href={calendarUrl} target="_blank" rel="noreferrer"><Icon name="calendar" />Add to calendar<Icon name="arrow-down" /></a>
           </div>
         </div>
       </section>
@@ -288,7 +288,7 @@ export default function Home() {
         <div className="timeline-scroll">
           <ol>
             {timeline.map(([time, icon, title, description]) => (
-              <li key={time}><time>{time}</time><span className="timeline-icon" aria-hidden="true">{icon}</span><h3>{title}</h3><p>{description}</p></li>
+              <li key={time}><time>{time}</time><span className="timeline-icon"><Icon name={icon} /></span><h3>{title}</h3><p>{description}</p></li>
             ))}
           </ol>
         </div>

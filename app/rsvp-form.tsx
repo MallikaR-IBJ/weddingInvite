@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { submitRsvp, type RsvpState } from "./actions";
+import { Icon } from "./icons";
 
 const initialState: RsvpState = { status: "idle" };
 
@@ -11,7 +12,7 @@ export function RsvpForm() {
   const error = (field: string) => state.errors?.[field]?.[0];
 
   if (state.status === "success") {
-    return <div className="form-success" role="status"><span aria-hidden="true">♡</span><p>{state.message}</p></div>;
+    return <div className="form-success" role="status"><Icon name="heart" /><p>{state.message}</p></div>;
   }
 
   return (
@@ -56,7 +57,7 @@ export function RsvpForm() {
       {error("message") && <p className="field-error">{error("message")}</p>}
 
       {state.message && <p className="form-status form-error" role="alert">{state.message}</p>}
-      <button className="send-button" type="submit" disabled={pending}>♡ &nbsp; {pending ? "Sending..." : "Send RSVP"}</button>
+      <button className="send-button" type="submit" disabled={pending}><Icon name="mail" />{pending ? "Sending..." : "Send RSVP"}</button>
     </form>
   );
 }
