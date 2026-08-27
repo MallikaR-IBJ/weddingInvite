@@ -1,3 +1,4 @@
+/*
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
@@ -284,4 +285,9 @@ export default async function AdminPage({
       )}
     </main>
   );
+}
+*/
+
+export default function AdminPage() {
+  return null;
 }

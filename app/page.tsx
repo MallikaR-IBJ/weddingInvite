@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Icon, type IconName } from "./icons";
-import { RsvpForm } from "./rsvp-form";
 
 const slides = [
   ["/img/hero-bg.jpg", "Hiruni and Ravindu showing their wedding rings over white lilies", "/img/hero-1_sp.webp"],
@@ -292,16 +291,6 @@ export default function Home() {
               <li key={time}><time>{time}</time><span className="timeline-icon"><Icon name={icon} /></span><h3>{title}</h3><p>{description}</p></li>
             ))}
           </ol>
-        </div>
-      </section>
-
-      <section className="rsvp-section page-section" id="rsvp">
-        <div className="rsvp-wrap">
-          <p className="section-label">Be Our Guest</p>
-          <h2 className="section-title">RSVP</h2>
-          <p className="rsvp-deadline">Kindly respond by October 20, 2026</p>
-          <RsvpForm />
-          <p className="rsvp-contact-note">For any changes, please contact the couple directly using the phone numbers below.</p>
         </div>
       </section>
 

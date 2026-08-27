@@ -1,3 +1,4 @@
+/*
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -171,3 +172,4 @@ export async function deleteParty(partyId: string) {
   revalidatePath("/admin");
   destination("parties", "Inviting party deleted.");
 }
+*/

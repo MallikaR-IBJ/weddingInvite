@@ -1,3 +1,4 @@
+/*
 "use client";
 
 import { useActionState, useState } from "react";
@@ -61,3 +62,4 @@ export function RsvpForm() {
     </form>
   );
 }
+*/

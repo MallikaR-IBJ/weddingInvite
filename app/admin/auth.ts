@@ -1,3 +1,4 @@
+/*
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 
@@ -57,3 +58,4 @@ export async function requireAdmin(superOnly = false) {
 export async function deleteAdminSession() {
   (await cookies()).delete(COOKIE_NAME);
 }
+*/
