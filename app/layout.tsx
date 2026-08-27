@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Hiruni & Ravindu — Wedding Invitation",
-  description: "Join Hiruni and Ravindu as they celebrate their wedding on December 14, 2026.",
+  title: "太朗 & 花子 — 結婚式のご招待",
+  description: "2026年12月14日、太朗と花子の結婚式にご参加ください。",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body>{children}</body>
     </html>
   );

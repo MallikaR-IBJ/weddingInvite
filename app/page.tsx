@@ -5,61 +5,40 @@ import { useEffect, useRef, useState } from "react";
 import { Icon, type IconName } from "./icons";
 
 const slides = [
-  ["/img/hero-bg.jpg", "Hiruni and Ravindu showing their wedding rings over white lilies", "/img/hero-1_sp.webp"],
-  ["/img/hero-2.jpg", "Hiruni and Ravindu holding hands in the garden", "/img/hero-2_sp.webp"],
-  ["/img/hero-3.webp", "Hiruni and Ravindu dancing beneath an archway", "/img/hero-3_sp.webp"],
+  ["/img/hero-bg.jpg", "太朗と花子が白いユリの上で結婚指輪を見せている", "/img/hero-1_sp.webp"],
+  ["/img/hero-2.jpg", "太朗と花子が庭で手をつないでいる", "/img/hero-2_sp.webp"],
+  ["/img/hero-3.webp", "太朗と花子がアーチの下で踊っている", "/img/hero-3_sp.webp"],
 ] as const;
 
 const timeline = [
-  ["9:30 AM", "pin", "We Welcome You", "Welcome & seating"],
-  ["9:50 AM", "heart", "We Marry", "Sacred vows on Poruwa"],
-  ["10:25 AM", "glass", "We Raise a Toast", "Drinks & celebrations begin"],
-  ["11:30 PM", "utensils", "We Dine", "Delightful wedding feast"],
-  ["12:30 PM", "music", "We Dance", "Celebrate with music & joy"],
-  ["01:15 PM", "sparkles", "We Celebrate", "The ceremonial gathering"],
-  ["03:20 PM", "wave", "We Say Goodbye", "A beautiful send-off"],
+  ["午前9:30", "pin", "ご来場", "受付・ご着席"],
+  ["午前9:50", "heart", "挙式", "神前式にて誓いの言葉"],
+  ["午前10:25", "glass", "乾杯", "披露宴開宴の乾杯"],
+  ["午前11:30", "utensils", "お食事", "心を込めたお料理のひととき"],
+  ["午後12:30", "music", "余興", "音楽とお祝いで盛り上がる"],
+  ["午後1:15", "sparkles", "お祝い", "笑顔あふれるひととき"],
+  ["午後3:20", "wave", "お見送り", "感謝の気持ちを込めて"],
 ] as const satisfies readonly (readonly [string, IconName, string, string])[];
 
-const mapSrc = "https://www.google.com/maps?q=7.3027672,80.6367887&output=embed";
-const mapUrl = "https://maps.app.goo.gl/ZJ6S4TzJ5DrnDfjH8";
-const calendarUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Hiruni+%26+Ravindu+Wedding&dates=20261214T093000%2F20261214T153000&ctz=Asia%2FColombo&details=Wedding+celebration&location=The+Grand+Kandyan+Hotel%2C+Kandy%2C+Sri+Lanka";
+const mapSrc = "https://www.google.com/maps?q=35.6907214,139.6901356&output=embed";
+const mapUrl = "https://maps.google.com/?q=Keio+Plaza+Hotel+Tokyo";
+const calendarUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=%E5%A4%AA%E6%9C%97+%26+%E8%8A%B1%E5%AD%90+%E7%B5%90%E5%A9%9A%E5%BC%8F&dates=20261214T093000%2F20261214T153000&ctz=Asia%2FTokyo&details=%E7%B5%90%E5%A9%9A%E5%BC%8F%E3%81%AE%E3%81%94%E6%8B%9B%E5%BE%85&location=%E4%BA%AC%E7%8E%8B%E3%83%97%E3%83%A9%E3%82%B6%E3%83%9B%E3%83%86%E3%83%AB%2C+%E6%9D%B1%E4%BA%AC";
 
 export default function Home() {
   const [opening, setOpening] = useState(false);
   const [finishingOpening, setFinishingOpening] = useState(false);
   const [opened, setOpened] = useState(false);
-  const [invitationOpen, setInvitationOpen] = useState(false);
-  const [invitationSeen, setInvitationSeen] = useState(false);
-  const [showInvitationCue, setShowInvitationCue] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const openingVideo = useRef<HTMLVideoElement>(null);
   const envelopeSound = useRef<HTMLAudioElement>(null);
   const backgroundMusic = useRef<HTMLAudioElement>(null);
-  const invitationButton = useRef<HTMLButtonElement>(null);
-  const invitationCloseButton = useRef<HTMLButtonElement>(null);
-  const invitationWasOpen = useRef(false);
 
   useEffect(() => {
-    document.body.style.overflow = opened && !invitationOpen ? "" : "hidden";
+    document.body.style.overflow = opened ? "" : "hidden";
     window.scrollTo(0, 0);
     return () => { document.body.style.overflow = ""; };
-  }, [opened, invitationOpen]);
-
-  useEffect(() => {
-    if (!invitationOpen) {
-      if (invitationWasOpen.current) invitationButton.current?.focus();
-      invitationWasOpen.current = false;
-      return;
-    }
-    invitationWasOpen.current = true;
-    invitationCloseButton.current?.focus();
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setInvitationOpen(false);
-    };
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [invitationOpen]);
+  }, [opened]);
 
   useEffect(() => {
     if (!opened) return;
@@ -69,13 +48,6 @@ export default function Home() {
     );
     return () => window.clearInterval(timer);
   }, [opened]);
-
-  useEffect(() => {
-    if (!showInvitationCue) return;
-    const delay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 3200;
-    const timer = window.setTimeout(() => setShowInvitationCue(false), delay);
-    return () => window.clearTimeout(timer);
-  }, [showInvitationCue]);
 
   const beginOpening = () => {
     setOpening(true);
@@ -148,68 +120,22 @@ export default function Home() {
           </video>
           {!opening ? (
             <button className="opening-trigger" type="button" onClick={beginOpening}>
-              <span>Hiruni & Ravindu</span><small>Tap to open</small>
+              <span>太朗 & 花子</span><small>タップして開く</small>
             </button>
           ) : (
-            <button className="opening-skip" type="button" onClick={skipOpening}>Skip</button>
+            <button className="opening-skip" type="button" onClick={skipOpening}>スキップ</button>
           )}
         </div>
       )}
 
       {opened && finishingOpening && (
-        <div className="opening-wash-out" aria-hidden="true" onAnimationEnd={() => { setFinishingOpening(false); setShowInvitationCue(true); }} />
+        <div className="opening-wash-out" aria-hidden="true" onAnimationEnd={() => setFinishingOpening(false)} />
       )}
 
       {opened && (
-        <>
-          {!invitationOpen && (
-            <>
-              {showInvitationCue && (
-                <Image className="invitation-cue" src="/img/chalk_arrow.png" alt="" width={464} height={987} />
-              )}
-              <button ref={invitationButton} className={`invitation-toggle${invitationSeen ? " is-seen" : ""}`} type="button" onClick={() => { setShowInvitationCue(false); setInvitationSeen(true); setInvitationOpen(true); }} aria-label="Open wedding invitation">
-                <Icon name="mail" />
-              </button>
-            </>
-          )}
-          <button className={`music-toggle${musicPlaying ? " is-playing" : ""}`} type="button" onClick={toggleMusic} aria-label={musicPlaying ? "Pause music" : "Play music"}>
-            <Icon name={musicPlaying ? "pause" : "music"} />
-          </button>
-        </>
-      )}
-
-      {opened && invitationOpen && (
-        <div className="invitation-backdrop" onClick={(event) => event.target === event.currentTarget && setInvitationOpen(false)}>
-          <article className="invitation-card" role="dialog" aria-modal="true" aria-labelledby="invitation-title" aria-describedby="invitation-description">
-            <button ref={invitationCloseButton} className="invitation-close" type="button" onClick={() => setInvitationOpen(false)} aria-label="Close wedding invitation"><Icon name="close" /></button>
-            <svg className="invitation-canopy" viewBox="0 0 600 128" aria-hidden="true">
-              <path className="canopy-line" d="M34 115C112 15 488 15 566 115" />
-              <path className="canopy-line fine" d="M57 115C131 38 469 38 543 115" />
-              <path className="canopy-leaves" d="M76 93l12 18 8-22 14 17 6-23 16 15 3-24 18 13v-24l19 11 3-24 18 9 6-24 17 8 9-23 16 6 12-22 15 5 15-20 14 4 15-18 15 18 14-4 15 20 15-5 12 22 16-6 9 23 17-8 6 24 18-9 3 24 19-11v24l18-13 3 24 16-15 6 23 14-17 8 22 12-18" />
-              <path className="canopy-lotus" d="M300 93c-18-13-22-31 0-53 22 22 18 40 0 53Zm0 0c-25-3-38-17-31-46 27 10 35 27 31 46Zm0 0c25-3 38-17 31-46-27 10-35 27-31 46Zm0 0c-17 9-34 7-48-10 20-14 37-9 48 10Zm0 0c17 9 34 7 48-10-20-14-37-9-48 10Z" />
-            </svg>
-
-            <div className="invitation-copy">
-              <p className="invitation-kicker">Together with their families</p>
-              <h2 id="invitation-title"><span>Hiruni</span><i>&amp;</i><span>Ravindu</span></h2>
-              <p id="invitation-description" className="invitation-request">request the pleasure of the company of</p>
-              <p className="invitee-name">Name Name</p>
-              <p className="invitation-request">to celebrate their marriage</p>
-
-              <div className="invitation-date" aria-label="Monday, December 14, 2026">
-                <span>December</span><strong>14</strong><span>Monday<br />2026</span>
-              </div>
-
-              <p className="invitation-time">9:30 in the morning <span>until</span> 3:30 in the afternoon</p>
-              <div className="invitation-venue">
-                <small>At</small>
-                <strong>The Grand Kandyan Hotel</strong>
-                <span>Kandy, Sri Lanka</span>
-              </div>
-            </div>
-            <div className="invitation-seal" aria-hidden="true"><span>H</span><i>&amp;</i><span>R</span></div>
-          </article>
-        </div>
+        <button className={`music-toggle${musicPlaying ? " is-playing" : ""}`} type="button" onClick={toggleMusic} aria-label={musicPlaying ? "音楽を一時停止" : "音楽を再生"}>
+          <Icon name={musicPlaying ? "pause" : "music"} />
+        </button>
       )}
 
       <section className="hero" id="home">
@@ -234,12 +160,12 @@ export default function Home() {
         </div>
         <div className="hero-shade" />
         <div className="hero-copy">
-          <p className="section-label on-dark">Save the date</p>
-          <h1>Hiruni&<br />Ravindu</h1>
-          <div className="hero-date"><span>December</span><strong>14</strong><span>2026</span></div>
-          <a className="scroll-cue" href="#couple"><span>Scroll Down</span><Icon name="chevron-down" /></a>
+          <p className="section-label on-dark">日程のお知らせ</p>
+          <h1>太朗&<br />花子</h1>
+          <div className="hero-date"><span>12月</span><strong>14</strong><span>2026年</span></div>
+          <a className="scroll-cue" href="#couple"><span>下へスクロール</span><Icon name="chevron-down" /></a>
         </div>
-        <div className="slider-dots" aria-label="Wedding photos">
+        <div className="slider-dots" aria-label="ウェディングフォト">
           {slides.map(([src], index) => (
             <button className={activeSlide === index ? "active" : ""} key={src} type="button" aria-label={`Go to slide ${index + 1}`} aria-current={activeSlide === index ? "true" : undefined} onClick={() => setActiveSlide(index)} />
           ))}
@@ -249,42 +175,42 @@ export default function Home() {
       <section className="couple-section page-section" id="couple">
         <div className="couple-grid">
           <article className="person-card">
-            <Image src="/img/bride.jpg" alt="Hiruni — the bride" fill sizes="(max-width: 700px) 288px, 288px" />
+            <Image src="/img/groom.jpg" alt="太朗 — 新郎" fill sizes="(max-width: 700px) 288px, 288px" />
             <div className="person-shade" />
-            <div className="person-copy"><h2>Hiruni</h2><span>The Bride</span><p>With a heart full of love and gratitude, I can&apos;t wait to begin this beautiful journey with the one who makes every moment brighter.</p></div>
+            <div className="person-copy"><h2>太朗</h2><span>新郎</span><p>この特別な日を、大切な皆様とともに迎えられることを心より嬉しく思います。素敵な一日にしましょう。</p></div>
           </article>
           <article className="person-card">
-            <Image src="/img/groom.jpg" alt="Ravindu — the groom" fill sizes="(max-width: 700px) 288px, 288px" />
+            <Image src="/img/bride.jpg" alt="花子 — 新婦" fill sizes="(max-width: 700px) 288px, 288px" />
             <div className="person-shade" />
-            <div className="person-copy"><h2>Ravindu</h2><span>The Groom</span><p>Every love story is special, but ours is my favorite. I&apos;m blessed to share this journey with the most amazing person.</p></div>
+            <div className="person-copy"><h2>花子</h2><span>新婦</span><p>温かいご祝福の中で、新しい門出を迎えられることを幸せに思います。どうぞよろしくお願いいたします。</p></div>
           </article>
         </div>
         <div className="marriage-note">
           <div className="heart"><Icon name="heart" /></div>
-          <p className="section-label">We are</p>
-          <h2 className="section-title">Getting Married</h2>
-          <p>From the moment our paths crossed, we knew that our love story was just beginning. Every day since has been a chapter filled with laughter, growth, and unforgettable memories. As we take the next step in our journey together, we invite you to share in the joy of this new chapter.</p>
-          <em>— Ravindu & Hiruni —</em>
+          <p className="section-label">私たちは</p>
+          <h2 className="section-title">結婚します</h2>
+          <p>私たちが出会ったあの日から、毎日が愛おしい思い出で満ちています。笑顔と感謝の気持ちを胸に、二人で歩んでまいります。この大切な節目に、ぜひお集まりいただければ幸いです。</p>
+          <em>— 太朗 & 花子 —</em>
         </div>
       </section>
 
       <section className="location-section page-section" id="location">
-        <div className="section-heading"><p className="section-label">Join us at</p><h2 className="section-title">Location</h2></div>
+        <div className="section-heading"><p className="section-label">会場のご案内</p><h2 className="section-title">アクセス</h2></div>
         <div className="location-card">
           <div className="location-pin"><Icon name="pin" /></div>
-          <h3>The Grand Kandyan Hotel</h3>
-          <p>Kandy</p>
-          <span className="time-chip"><Icon name="clock" />09:30 AM to 3:30 PM</span>
-          <div className="map-frame"><iframe src={mapSrc} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Wedding venue location" /></div>
+          <h3>京王プラザホテル</h3>
+          <p>東京都新宿区西新宿</p>
+          <span className="time-chip"><Icon name="clock" />午前9時30分〜午後3時30分</span>
+          <div className="map-frame"><iframe src={mapSrc} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="結婚式会場の地図" /></div>
           <div className="location-actions">
-            <a className="primary-button" href={mapUrl} target="_blank" rel="noreferrer"><Icon name="pin" />Open in maps<Icon name="external-link" /></a>
-            <a className="secondary-button" href={calendarUrl} target="_blank" rel="noreferrer"><Icon name="calendar" />Add to calendar<Icon name="arrow-down" /></a>
+            <a className="primary-button" href={mapUrl} target="_blank" rel="noreferrer"><Icon name="pin" />地図で開く<Icon name="external-link" /></a>
+            <a className="secondary-button" href={calendarUrl} target="_blank" rel="noreferrer"><Icon name="calendar" />カレンダーに追加<Icon name="arrow-down" /></a>
           </div>
         </div>
       </section>
 
       <section className="timeline-section page-section">
-        <div className="section-heading"><p className="section-label">Our celebration</p><h2 className="section-title">Timeline</h2></div>
+        <div className="section-heading"><p className="section-label">お式の流れ</p><h2 className="section-title">タイムライン</h2></div>
         <div className="timeline-scroll">
           <ol>
             {timeline.map(([time, icon, title, description]) => (
@@ -294,7 +220,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer><h3>Hiruni & Ravindu</h3><p>December 14 2026</p><p>Hiruni: 0715129071 &nbsp;|&nbsp; Ravindu: 0715328308</p><small>© 2026 ravinduranathilaka | All rights reserved</small></footer>
+      <footer><h3>太朗 & 花子</h3><p>2026年12月14日</p><p>太朗: 0715328308 &nbsp;|&nbsp; 花子: 0715129071</p><small>© 2026 ravinduranathilaka | 無断転載を禁じます</small></footer>
     </main>
   );
 }
